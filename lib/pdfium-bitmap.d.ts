@@ -1,0 +1,11 @@
+import { PdfBitmap } from './interfaces';
+export declare const FPDFBitmap_Unknown = 0;
+export declare const FPDFBitmap_Gray = 1;
+export declare const FPDFBitmap_BGR = 2;
+export declare const FPDFBitmap_BGRx = 3;
+export declare const FPDFBitmap_BGRA = 4;
+export declare function create(width: number, height: number, alpha: number): PdfBitmap;
+export declare function createEx(width: number, height: number, format: number, firstScan: Buffer, stride: number): PdfBitmap;
+export declare function destroy(bitmap: PdfBitmap): void;
+export declare function getBuffer(bitmap: PdfBitmap): Buffer;
+export declare function getStride(bitmap: PdfBitmap): number;
