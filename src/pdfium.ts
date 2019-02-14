@@ -79,25 +79,20 @@ export async function importPagesAsync(
   destDoc: PdfDocument, srcDoc: PdfDocument, pageRange: string, insertIndex: number
 ): Promise<void> {
 
-  return new Promise((resolve, reject) => {
+  let pageRangeBuff: Buffer | null = Ref.allocCString(pageRange);
 
-    let pageRangeBuff: Buffer | null = Ref.allocCString(pageRange);
+  try {
+    PDFiumFFI.FPDF_ImportPages(destDoc, srcDoc, pageRangeBuff, insertIndex);
+    checkError('FPDF_ImportPages');
+  }
 
-    try {
-      PDFiumFFI.FPDF_ImportPages(destDoc, srcDoc, pageRangeBuff, insertIndex);
-      checkError('FPDF_ImportPages');
+  catch (error) {
+    throw error;
+  }
 
-      resolve();
-    }
-
-    catch (error) {
-      reject(error);
-    }
-
-    finally {
-      pageRangeBuff = null;
-    }
-  });
+  finally {
+    pageRangeBuff = null;
+  }
 }
 
 
@@ -112,28 +107,25 @@ export async function loadDocumentFromBufferAsync(
   pdfData: Buffer, password: string | null = null
 ): Promise<PdfDocument> {
 
-  return new Promise((resolve, reject) => {
+  let passwordBuff: Buffer | null = null;
+  if (password) {
+    passwordBuff = Ref.allocCString(password);
+  }
 
-    let passwordBuff: Buffer | null = null;
-    if (password) {
-      passwordBuff = Ref.allocCString(password);
-    }
+  try {
+    const doc: PdfDocument = PDFiumFFI.FPDF_LoadMemDocument(pdfData, pdfData.byteLength, passwordBuff);
+    checkError('FPDF_LoadMemDocument');
 
-    try {
-      const doc: PdfDocument = PDFiumFFI.FPDF_LoadMemDocument(pdfData, pdfData.byteLength, passwordBuff);
-      checkError('FPDF_LoadMemDocument');
+    return doc;
+  }
 
-      resolve(doc);
-    }
+  catch (error) {
+    throw error;
+  }
 
-    catch (err) {
-      reject(err);
-    }
-
-    finally {
-      passwordBuff = null;
-    }
-  });
+  finally {
+    passwordBuff = null;
+  }
 }
 
 
@@ -141,31 +133,28 @@ export async function loadDocumentFromFileAsync(
   filePath: string, password: string | null = null
 ): Promise<PdfDocument> {
 
-  return new Promise((resolve, reject) => {
+  let filePathBuff: Buffer | null = Ref.allocCString(filePath);
 
-    let filePathBuff: Buffer | null = Ref.allocCString(filePath);
+  let passwordBuff: Buffer | null = null;
+  if (password) {
+    passwordBuff = Ref.allocCString(password);
+  }
 
-    let passwordBuff: Buffer | null = null;
-    if (password) {
-      passwordBuff = Ref.allocCString(password);
-    }
+  try {
+    const doc: PdfDocument = PDFiumFFI.FPDF_LoadDocument(filePathBuff, passwordBuff);
+    checkError('FPDF_LoadDocument');
 
-    try {
-      const doc: PdfDocument = PDFiumFFI.FPDF_LoadDocument(filePathBuff, passwordBuff);
-      checkError('FPDF_LoadDocument');
+    return doc;
+  }
 
-      resolve(doc);
-    }
+  catch (error) {
+    throw error;
+  }
 
-    catch (err) {
-      reject(err);
-    }
-
-    finally {
-      filePathBuff = null;
-      passwordBuff = null;
-    }
-  });
+  finally {
+    filePathBuff = null;
+    passwordBuff = null;
+  }
 }
 
 
@@ -189,19 +178,14 @@ export async function renderPageBitmapAsync(
   flags: number
 ): Promise<void> {
 
-  return new Promise((resolve, reject) => {
+  try {
+    PDFiumFFI.FPDF_RenderPageBitmap(bitmap, page, startX, startY, sizeX, sizeY, rotate, flags);
+    checkError('FPDF_RenderPageBitmap');
+  }
 
-    try {
-      PDFiumFFI.FPDF_RenderPageBitmap(bitmap, page, startX, startY, sizeX, sizeY, rotate, flags);
-      checkError('FPDF_RenderPageBitmap');
-
-      resolve();
-    }
-
-    catch (error) {
-      reject(error);
-    }
-  });
+  catch (error) {
+    throw error;
+  }
 }
 
 
@@ -215,30 +199,28 @@ export async function saveWithVersionAsync(
   document: PdfDocument, flags: number = 0, version: number = 15
 ): Promise<Buffer> {
 
-  return new Promise((resolve, reject) => {
-
-    let savedDocBufferArr: Buffer[] | null = [];
-    let wb: Buffer | null = writeBlock(savedDocBufferArr);
-    let pdfFileWrite: StructTypeWithRef | null = new FPDF_FILEWRITE({
-      version: 1,
-      WriteBlock: wb
-    });
-    try {
-      // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-      PDFiumFFI.FPDF_SaveWithVersion(document, pdfFileWrite!.ref(), flags, version);
-      checkError('FPDF_SaveWithVersion');
-
-      resolve(Buffer.concat(savedDocBufferArr));
-    }
-
-    catch (error) {
-      reject(error);
-    }
-
-    finally {
-      pdfFileWrite = null;
-      wb = null;
-      savedDocBufferArr = null;
-    }
+  let savedDocBufferArr: Buffer[] | null = [];
+  let wb: Buffer | null = writeBlock(savedDocBufferArr);
+  let pdfFileWrite: StructTypeWithRef | null = new FPDF_FILEWRITE({
+    version: 1,
+    WriteBlock: wb
   });
+
+  try {
+    // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+    PDFiumFFI.FPDF_SaveWithVersion(document, pdfFileWrite!.ref(), flags, version);
+    checkError('FPDF_SaveWithVersion');
+
+    return Buffer.concat(savedDocBufferArr);
+  }
+
+  catch (error) {
+    throw error;
+  }
+
+  finally {
+    pdfFileWrite = null;
+    wb = null;
+    savedDocBufferArr = null;
+  }
 }
