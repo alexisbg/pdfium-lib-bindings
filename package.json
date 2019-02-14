@@ -1,6 +1,6 @@
 {
   "name": "pdfium-lib-bindings",
-  "version": "0.0.1",
+  "version": "0.0.2",
   "description": "Node.js native bindings for libpdfium",
   "main": "lib/index.js",
   "author": "Alexis Bergue",
@@ -9,10 +9,11 @@
   "repository": "https://github.com/alexisbg/pdfium-lib-bindings.git",
   "scripts": {
     "build": "tsc",
-    "dl-bins": "yarn build && node lib/dl-bins.js",
+    "dl-bins": "npm run build && node lib/dl-bins.js",
     "eslint": "eslint --color --ignore-pattern 'src/**/*.snap' 'src/**/*'",
-    "prepublish": "yarn build",
-    "pretest": "yarn tsc:check && yarn eslint",
+    "prepublish": "npm run build",
+    "pretest": "npm run tsc:check && npm run eslint",
+    "postinstall": "npm run build",
     "tsc:check": "tsc --noEmit"
   },
   "dependencies": {
@@ -23,7 +24,8 @@
     "ffi": "2.3.0",
     "node-gyp": "3.8.0",
     "ref": "1.3.5",
-    "ref-struct": "1.1.0"
+    "ref-struct": "1.1.0",
+    "typescript": "3.3.1"
   },
   "devDependencies": {
     "@types/download": "6.2.4",
@@ -31,7 +33,6 @@
     "@typescript-eslint/parser": "1.3.0",
     "download": "7.1.0",
     "eslint": "5.13.0",
-    "source-map-support": "0.5.10",
-    "typescript": "3.3.1"
+    "source-map-support": "0.5.10"
   }
 }
