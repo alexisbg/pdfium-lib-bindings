@@ -29,4 +29,5 @@ bower_components
 .DS_Store
 Thumbs.db
 
+/lib/
 /test.ts
