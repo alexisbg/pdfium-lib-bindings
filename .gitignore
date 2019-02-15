@@ -29,5 +29,6 @@ bower_components
 .DS_Store
 Thumbs.db
 
-/lib/
+####
+/.rpt2_cache/
 /test.ts
