@@ -21,6 +21,7 @@ export declare function initLibrary(): void;
 export declare function loadDocumentFromBufferAsync(pdfData: Buffer, password?: string | null): Promise<PdfDocument>;
 export declare function loadDocumentFromFileAsync(filePath: string, password?: string | null): Promise<PdfDocument>;
 export declare function loadPage(document: PdfDocument, pageIndex: number): PdfPage;
-export declare function renderPageBitmapAsync(bitmap: PdfBitmap, page: PdfPage, startX: number, startY: number, sizeX: number, sizeY: number, rotate: number, flags: number): Promise<void>;
+export declare function renderPageBitmapAsync(bitmap: PdfBitmap, page: PdfPage, startX: number, startY: number, sizeX: number, sizeY: number, rotate?: number, flags?: number): Promise<void>;
+export declare function renderPageBitmapToRgbaBufferAsync(bitmap: PdfBitmap, page: PdfPage, startX: number, startY: number, sizeX: number, sizeY: number): Promise<Buffer>;
 export declare function saveAsCopyAsync(document: PdfDocument, flags?: number): Promise<Buffer>;
 export declare function saveWithVersionAsync(document: PdfDocument, flags?: number, version?: number): Promise<Buffer>;

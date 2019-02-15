@@ -1,5 +1,6 @@
 import Ref from 'ref';
 import PDFiumFFI, { checkError, writeBlock, FPDF_FILEWRITE } from './pdfium-ffi';
+import * as PDFiumBitmap from './pdfium-bitmap';
 import { PdfBitmap, PdfDocument, PdfPage, StructTypeWithRef } from './interfaces';
 
 // FPDF_SaveAsCopy and FPDF_SaveWithVersion flags
@@ -174,18 +175,42 @@ export async function renderPageBitmapAsync(
   startY: number,
   sizeX: number,
   sizeY: number,
-  rotate: number,
-  flags: number
+  rotate: number = 0,
+  flags: number = 0
 ): Promise<void> {
 
-  try {
-    PDFiumFFI.FPDF_RenderPageBitmap(bitmap, page, startX, startY, sizeX, sizeY, rotate, flags);
-    checkError('FPDF_RenderPageBitmap');
-  }
+  PDFiumFFI.FPDF_RenderPageBitmap(bitmap, page, startX, startY, sizeX, sizeY, rotate, flags);
+  checkError('FPDF_RenderPageBitmap');
+}
 
-  catch (error) {
-    throw error;
-  }
+
+export async function renderPageBitmapToRgbaBufferAsync(
+  bitmap: PdfBitmap,
+  page: PdfPage,
+  startX: number,
+  startY: number,
+  sizeX: number,
+  sizeY: number
+): Promise<Buffer> {
+
+  const width = sizeX - startX;
+  const height = sizeY - startY;
+  const channels = 4;
+
+  // Create bitmap and its allocated buffer
+  const pdfBitmap: PdfBitmap = PDFiumBitmap.create(width, height, 1);
+
+  // Render page to bitmap
+  renderPageBitmapAsync(bitmap, page, startX, startY, sizeX, sizeY);
+
+  // Get raw bitmap buffer
+  let bitmapBuffer = Ref.reinterpret(PDFiumBitmap.getBuffer(pdfBitmap), width * height * channels, 0);
+  bitmapBuffer = Buffer.from(bitmapBuffer); // Copy it to a new buffer before destroying the bitmap
+
+  // Destroy bitmap
+  PDFiumBitmap.destroy(pdfBitmap);
+
+  return bitmapBuffer;
 }
 
 
