@@ -185,7 +185,6 @@ export async function renderPageBitmapAsync(
 
 
 export async function renderPageBitmapToRgbaBufferAsync(
-  bitmap: PdfBitmap,
   page: PdfPage,
   startX: number,
   startY: number,
@@ -201,7 +200,7 @@ export async function renderPageBitmapToRgbaBufferAsync(
   const pdfBitmap: PdfBitmap = PDFiumBitmap.create(width, height, 1);
 
   // Render page to bitmap
-  renderPageBitmapAsync(bitmap, page, startX, startY, sizeX, sizeY);
+  renderPageBitmapAsync(pdfBitmap, page, startX, startY, sizeX, sizeY);
 
   // Get raw bitmap buffer
   let bitmapBuffer = Ref.reinterpret(PDFiumBitmap.getBuffer(pdfBitmap), width * height * channels, 0);
