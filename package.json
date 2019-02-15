@@ -1,6 +1,6 @@
 {
   "name": "pdfium-lib-bindings",
-  "version": "0.0.3",
+  "version": "0.0.4",
   "description": "Node.js native bindings for libpdfium",
   "author": "Alexis Bergue",
   "license": "MIT",
@@ -18,8 +18,8 @@
     "tsc:check": "tsc --noEmit"
   },
   "dependencies": {
-    "@types/ffi": "0.2.1",
-    "@types/node": "10.12.24",
+    "@types/ffi": "0.2.2",
+    "@types/node": "11.9.4",
     "@types/ref": "0.0.28",
     "@types/ref-struct": "0.0.29",
     "ffi": "2.3.0",
