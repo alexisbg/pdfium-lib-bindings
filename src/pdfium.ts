@@ -200,7 +200,7 @@ export async function renderPageBitmapToRgbaBufferAsync(
   const pdfBitmap: PdfBitmap = PDFiumBitmap.create(width, height, 1);
 
   // Render page to bitmap
-  renderPageBitmapAsync(pdfBitmap, page, startX, startY, sizeX, sizeY);
+  await renderPageBitmapAsync(pdfBitmap, page, startX, startY, sizeX, sizeY);
 
   // Get raw bitmap buffer
   let bitmapBuffer = Ref.reinterpret(PDFiumBitmap.getBuffer(pdfBitmap), width * height * channels, 0);
